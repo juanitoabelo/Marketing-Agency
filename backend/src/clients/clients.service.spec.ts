@@ -2,6 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { ClientsService } from './clients.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateClientDto } from './dto/create-client.dto';
+import { ClientStatus } from './dto/update-client-status.dto';
 
 describe('ClientsService', () => {
   let service: ClientsService;
@@ -84,7 +85,7 @@ describe('ClientsService', () => {
   describe('updateStatus', () => {
     it('should update client status', async () => {
       const clientId = 'client_123';
-      const status = 'QUALIFIED';
+      const status = ClientStatus.QUALIFIED;
       const expected = { id: clientId, status };
       jest.spyOn(prisma.client, 'update').mockResolvedValue(expected);
 
