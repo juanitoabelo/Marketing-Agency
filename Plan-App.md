@@ -1,6 +1,6 @@
 # Agency Management Application Plan
 
-Internal tool to manage all agency operations: clients, leads, projects, communications, SEO tasks, development tickets, billing, and agent activity. Uses the multi-agent system defined in `opencode.json`.
+Internal tool for **Abelo Creative** to manage all agency operations: clients, leads, projects, communications, SEO tasks, development tickets, billing, and agent activity. Uses the multi-agent system defined in `opencode.json`.
 
 ## Core Modules
 - **Client & Lead Management**: Track leads (synced from Marketing agent), client onboarding, contracts (synced from CEO agent)

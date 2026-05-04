@@ -1,6 +1,6 @@
 # Multi-Agent Agency Implementation Plan
 
-Autonomous agent system for a Website/Application/Design/Development Agency using OpenCode, with agents that operate independently, send emails, and close deals.
+Autonomous agent system for **Abelo Creative** (Website/Application/Design/Development Agency) using OpenCode, with agents that operate independently, send emails, and close deals.
 
 ## Prerequisites: Required Skills
 Install via `configure-ecc` skill:

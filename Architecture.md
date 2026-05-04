@@ -1,6 +1,6 @@
 # Architecture.md
 
-Technical architecture for the Agency Management Application. Defined by CTO Agent.
+Technical architecture for the **Abelo Creative** Agency Management Application. Defined by CTO Agent.
 
 ## Tech Stack (Finalized)
 

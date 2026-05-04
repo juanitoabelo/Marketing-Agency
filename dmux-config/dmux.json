@@ -1,0 +1,38 @@
+{
+  "sessions": {
+    "abelo-creative": {
+      "primary": {
+        "agent": "ceo",
+        "pane": 0,
+        "command": "opencode --agent ceo --task 'Autonomously generate leads, send proposals, close deals under $10k, and manage projects for Abelo Creative. Check pending tasks every 30 minutes.'"
+      },
+      "subagents": [
+        {
+          "agent": "cto",
+          "pane": 1,
+          "command": "opencode --agent cto --task 'Define tech stack, review architecture, ensure technical scalability for Abelo Creative client projects.'"
+        },
+        {
+          "agent": "marketing",
+          "pane": 2,
+          "command": "opencode --agent marketing --task 'Generate leads via lead-intelligence skill, send proposals via email-ops, follow up with leads for Abelo Creative.'"
+        },
+        {
+          "agent": "seo_specialist",
+          "pane": 3,
+          "command": "opencode --agent seo_specialist --task 'Run SEO audits for Abelo Creative clients, log results via log_seo_audit MCP tool, track keyword rankings.'"
+        },
+        {
+          "agent": "web_developer",
+          "pane": 4,
+          "command": "opencode --agent web_developer --task 'Implement features, fix bugs, manage Git workflows for Abelo Creative client projects.'"
+        },
+        {
+          "agent": "designer",
+          "pane": 5,
+          "command": "opencode --agent designer --task 'Create UI components, define design tokens, ensure intuitive user experience for Abelo Creative client projects.'"
+        }
+      ]
+    }
+  }
+}
