@@ -10,21 +10,20 @@ datasource db {
 
 // Client & Lead Management
 model Client {
-  id          String   @id @default(cuid())
-  name        String
-  email       String   @unique
-  company     String?
-  status      ClientStatus @default(LEAD)
-  leadScore   Int      @default(0) // 0-100, from Marketing agent
-  source      String? // lead source (e.g., "cold_email", "organic")
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id        String       @id @default(cuid())
+  name      String
+  email     String       @unique
+  company   String?
+  status    ClientStatus @default(LEAD)
+  leadScore Int          @default(0) // 0-100, from Marketing agent
+  source    String? // lead source (e.g., "cold_email", "organic")
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
 
   // Relations
-  projects    Project[]
-  invoices    Invoice[]
-  audits      SEOAudit[]
-  auditLogs   AgentAuditLog[]
+  projects Project[]
+  invoices Invoice[]
+  audits   SEOAudit[]
 
   @@map("clients")
 }
@@ -38,19 +37,19 @@ enum ClientStatus {
 
 // Project Management
 model Project {
-  id          String   @id @default(cuid())
+  id          String        @id @default(cuid())
   clientId    String
   name        String
   description String?
   status      ProjectStatus @default(PLANNING)
   milestones  Json? // [{name, status, assignee, dueDate}]
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
 
   // Relations
-  client      Client   @relation(fields: [clientId], references: [id])
-  tasks       Task[]
-  agents      AgentSession[]
+  client Client         @relation(fields: [clientId], references: [id])
+  tasks  Task[]
+  agents AgentSession[]
 
   @@map("projects")
 }
@@ -64,7 +63,7 @@ enum ProjectStatus {
 }
 
 model Task {
-  id          String   @id @default(cuid())
+  id          String     @id @default(cuid())
   projectId   String
   assignedTo  AgentType // which agent is working on it
   name        String
@@ -72,11 +71,11 @@ model Task {
   status      TaskStatus @default(PENDING)
   lockedBy    String? // agent API key if locked
   lockedAt    DateTime? // lock timestamp (30 min timeout)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
 
   // Relations
-  project     Project  @relation(fields: [projectId], references: [id])
+  project Project @relation(fields: [projectId], references: [id])
 
   @@map("tasks")
 }
@@ -100,33 +99,33 @@ enum AgentType {
 
 // SEO Audits
 model SEOAudit {
-  id          String   @id @default(cuid())
-  clientId    String
-  pageSpeed   Json? // {desktop: number, mobile: number}
+  id         String   @id @default(cuid())
+  clientId   String
+  pageSpeed  Json? // {desktop: number, mobile: number}
   coreVitals Json? // {LCP, FID, CLS}
-  metadata    Json? // {title, description, keywords, completeness}
-  issues      Json? // [{type, severity, message, fix}]
-  createdAt   DateTime @default(now())
+  metadata   Json? // {title, description, keywords, completeness}
+  issues     Json? // [{type, severity, message, fix}]
+  createdAt  DateTime @default(now())
 
   // Relations
-  client      Client   @relation(fields: [clientId], references: [id])
+  client Client @relation(fields: [clientId], references: [id])
 
   @@map("seo_audits")
 }
 
 // Billing & Invoices
 model Invoice {
-  id          String   @id @default(cuid())
-  clientId    String
-  amount      Float
-  currency    String   @default("USD")
-  status      InvoiceStatus @default(DRAFT)
-  stripeId    String? // Stripe invoice ID after payment
-  createdAt   DateTime @default(now())
-  paidAt      DateTime?
+  id        String        @id @default(cuid())
+  clientId  String
+  amount    Float
+  currency  String        @default("USD")
+  status    InvoiceStatus @default(DRAFT)
+  stripeId  String? // Stripe invoice ID after payment
+  createdAt DateTime      @default(now())
+  paidAt    DateTime?
 
   // Relations
-  client      Client   @relation(fields: [clientId], references: [id])
+  client Client @relation(fields: [clientId], references: [id])
 
   @@map("invoices")
 }
@@ -141,13 +140,13 @@ enum InvoiceStatus {
 
 // Agent Communication & Audit
 model AgentMessage {
-  id          String   @id @default(cuid())
-  fromAgent  AgentType
-  toAgent    AgentType?
-  taskId      String? // related task if handoff
-  type        MessageType
-  payload     Json // full message content
-  createdAt   DateTime @default(now())
+  id        String      @id @default(cuid())
+  fromAgent AgentType
+  toAgent   AgentType?
+  taskId    String? // related task if handoff
+  type      MessageType
+  payload   Json // full message content
+  createdAt DateTime    @default(now())
 
   @@map("agent_messages")
 }
@@ -160,30 +159,30 @@ enum MessageType {
 }
 
 model AgentAuditLog {
-  id          String   @id @default(cuid())
-  agent       AgentType
-  tool        String // MCP tool name
-  inputs      Json? // tool inputs (sanitized)
-  success     Boolean
-  error       String? // error message if failed
-  createdAt   DateTime @default(now())
+  id        String    @id @default(cuid())
+  agent     AgentType
+  tool      String // MCP tool name
+  inputs    Json? // tool inputs (sanitized)
+  success   Boolean
+  error     String? // error message if failed
+  createdAt DateTime  @default(now())
 
   @@map("agent_audit_log")
 }
 
 // Agent Health & Sessions
 model AgentSession {
-  id          String   @id @default(cuid())
-  agent       AgentType
-  status      AgentStatus @default(HEALTHY)
+  id            String      @id @default(cuid())
+  agent         AgentType
+  status        AgentStatus @default(HEALTHY)
   lastHeartbeat DateTime? // updated every 10 min
-  currentTask  String? // task ID if busy
-  errorCount  Int      @default(0)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  currentTask   String? // task ID if busy
+  errorCount    Int         @default(0)
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
 
   // Relations
-  project     Project? @relation(fields: [currentTask], references: [id])
+  project Project? @relation(fields: [currentTask], references: [id])
 
   @@map("agent_sessions")
 }
