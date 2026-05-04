@@ -1,0 +1,196 @@
+// Prisma schema for Abelo Creative Agency Management
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Client & Lead Management
+model Client {
+  id          String   @id @default(cuid())
+  name        String
+  email       String   @unique
+  company     String?
+  status      ClientStatus @default(LEAD)
+  leadScore   Int      @default(0) // 0-100, from Marketing agent
+  source      String? // lead source (e.g., "cold_email", "organic")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  projects    Project[]
+  invoices    Invoice[]
+  audits      SEOAudit[]
+  auditLogs   AgentAuditLog[]
+
+  @@map("clients")
+}
+
+enum ClientStatus {
+  LEAD
+  QUALIFIED
+  CLIENT
+  CHURNED
+}
+
+// Project Management
+model Project {
+  id          String   @id @default(cuid())
+  clientId    String
+  name        String
+  description String?
+  status      ProjectStatus @default(PLANNING)
+  milestones  Json? // [{name, status, assignee, dueDate}]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  client      Client   @relation(fields: [clientId], references: [id])
+  tasks       Task[]
+  agents      AgentSession[]
+
+  @@map("projects")
+}
+
+enum ProjectStatus {
+  PLANNING
+  IN_PROGRESS
+  REVIEW
+  COMPLETED
+  ON_HOLD
+}
+
+model Task {
+  id          String   @id @default(cuid())
+  projectId   String
+  assignedTo  AgentType // which agent is working on it
+  name        String
+  description String?
+  status      TaskStatus @default(PENDING)
+  lockedBy    String? // agent API key if locked
+  lockedAt    DateTime? // lock timestamp (30 min timeout)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  project     Project  @relation(fields: [projectId], references: [id])
+
+  @@map("tasks")
+}
+
+enum TaskStatus {
+  PENDING
+  IN_PROGRESS
+  BLOCKED
+  COMPLETED
+  FAILED
+}
+
+enum AgentType {
+  CEO
+  CTO
+  MARKETING
+  SEO_SPECIALIST
+  WEB_DEVELOPER
+  DESIGNER
+}
+
+// SEO Audits
+model SEOAudit {
+  id          String   @id @default(cuid())
+  clientId    String
+  pageSpeed   Json? // {desktop: number, mobile: number}
+  coreVitals Json? // {LCP, FID, CLS}
+  metadata    Json? // {title, description, keywords, completeness}
+  issues      Json? // [{type, severity, message, fix}]
+  createdAt   DateTime @default(now())
+
+  // Relations
+  client      Client   @relation(fields: [clientId], references: [id])
+
+  @@map("seo_audits")
+}
+
+// Billing & Invoices
+model Invoice {
+  id          String   @id @default(cuid())
+  clientId    String
+  amount      Float
+  currency    String   @default("USD")
+  status      InvoiceStatus @default(DRAFT)
+  stripeId    String? // Stripe invoice ID after payment
+  createdAt   DateTime @default(now())
+  paidAt      DateTime?
+
+  // Relations
+  client      Client   @relation(fields: [clientId], references: [id])
+
+  @@map("invoices")
+}
+
+enum InvoiceStatus {
+  DRAFT
+  SENT
+  PAID
+  FAILED
+  CANCELLED
+}
+
+// Agent Communication & Audit
+model AgentMessage {
+  id          String   @id @default(cuid())
+  fromAgent  AgentType
+  toAgent    AgentType?
+  taskId      String? // related task if handoff
+  type        MessageType
+  payload     Json // full message content
+  createdAt   DateTime @default(now())
+
+  @@map("agent_messages")
+}
+
+enum MessageType {
+  HANDOFF
+  STATUS_UPDATE
+  ASK
+  ERROR
+}
+
+model AgentAuditLog {
+  id          String   @id @default(cuid())
+  agent       AgentType
+  tool        String // MCP tool name
+  inputs      Json? // tool inputs (sanitized)
+  success     Boolean
+  error       String? // error message if failed
+  createdAt   DateTime @default(now())
+
+  @@map("agent_audit_log")
+}
+
+// Agent Health & Sessions
+model AgentSession {
+  id          String   @id @default(cuid())
+  agent       AgentType
+  status      AgentStatus @default(HEALTHY)
+  lastHeartbeat DateTime? // updated every 10 min
+  currentTask  String? // task ID if busy
+  errorCount  Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  project     Project? @relation(fields: [currentTask], references: [id])
+
+  @@map("agent_sessions")
+}
+
+enum AgentStatus {
+  HEALTHY
+  STUCK
+  OFFLINE
+  ERROR
+}
