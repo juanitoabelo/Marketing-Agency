@@ -9,6 +9,16 @@
     }
   ],
   "settings": {},
-  "lastUpdated": "2026-05-04T04:39:28.991Z",
-  "controlPaneSize": 40
+  "lastUpdated": "2026-05-04T06:36:07.365Z",
+  "controlPaneSize": 40,
+  "controlPaneId": "%0",
+  "welcomePaneId": "%1",
+  "updateSettings": {
+    "checkIntervalHours": 24,
+    "autoUpdateEnabled": true,
+    "lastCheckTime": 1777876567364,
+    "cachedCurrentVersion": "5.7.1",
+    "cachedLatestVersion": "5.7.1",
+    "cachedHasUpdate": false
+  }
 }
