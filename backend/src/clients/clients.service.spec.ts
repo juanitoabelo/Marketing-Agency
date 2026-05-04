@@ -88,7 +88,7 @@ describe('ClientsService', () => {
       const expected = { id: clientId, status };
       jest.spyOn(prisma.client, 'update').mockResolvedValue(expected);
 
-      const result = await service.updateStatus(clientId, status);
+      const result = await service.updateStatus(clientId, { status });
       expect(result).toEqual(expected);
     });
   });
