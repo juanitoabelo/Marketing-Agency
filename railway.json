@@ -1,0 +1,62 @@
+{
+  "$schema": "https://railway.app/railway.schema.json",
+  "build": {
+    "builder": "NIXPACKS"
+  },
+  "deployments": [
+    {
+      "name": "abelo-creative-backend",
+      "service": "backend",
+      "src": "backend/",
+      "env": {
+        "DATABASE_URL": "@postgresql.prisma-client.url",
+        "JWT_SECRET": "your-jwt-secret-here",
+        "STRIPE_SECRET_KEY": "@stripe-secret-key",
+        "FRONTEND_URL": "https://abelo-creative.vercel.app",
+        "PORT": "3001"
+      },
+      "healthcheckPath": "/api/health"
+    },
+    {
+      "name": "abelo-creative-mcp-server",
+      "service": "mcp-server",
+      "src": "mcp-server/",
+      "env": {
+        "AGENT_API_KEYS": "{\"ceo\":\"...\",\"cto\":\"...\",\"marketing\":\"...\",\"seo_specialist\":\"...\",\"web_developer\":\"...\",\"designer\":\"...\"}",
+        "JWT_SECRET": "@jwt-secret",
+        "DATABASE_URL": "@postgresql.prisma-client.url",
+        "PORT": "3002",
+        "TRANSPORT": "http"
+      },
+      "healthcheckPath": "/mcp"
+    }
+  ],
+  "plugins": [
+    {
+      "name": "postgresql",
+      "env": {
+        "POSTGRES_EXTENSIONS": "uuid-ossp"
+      }
+    }
+  ],
+  "crons": [
+    {
+      "name": "daily-lead-gen",
+      "schedule": "0 9 * * *",
+      "service": "abelo-creative-mcp-server",
+      "command": "bash scripts/daily-lead-gen.sh"
+    },
+    {
+      "name": "weekly-seo-audit",
+      "schedule": "0 10 * * 1",
+      "service": "abelo-creative-mcp-server",
+      "command": "bash scripts/weekly-seo-audit.sh"
+    },
+    {
+      "name": "pending-tasks",
+      "schedule": "*/30 * * * *",
+      "service": "abelo-creative-backend",
+      "command": "bash scripts/pending-tasks.sh"
+    }
+  ]
+}
