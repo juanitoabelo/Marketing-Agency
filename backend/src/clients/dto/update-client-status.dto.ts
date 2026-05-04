@@ -1,5 +1,11 @@
 import { IsEnum } from 'class-validator';
-import { ClientStatus } from '@prisma/client';
+
+export enum ClientStatus {
+  LEAD = 'LEAD',
+  QUALIFIED = 'QUALIFIED',
+  CLIENT = 'CLIENT',
+  CHURNED = 'CHURNED',
+}
 
 export class UpdateClientStatusDto {
   @IsEnum(ClientStatus)
