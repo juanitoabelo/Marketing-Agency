@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
+import jwt from 'jsonwebtoken';
 
 const AGENT_API_KEYS = JSON.parse(process.env.AGENT_API_KEYS || "{}");
 const JWT_SECRET = process.env.JWT_SECRET!;
